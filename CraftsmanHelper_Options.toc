@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: CraftsmanHelper_Options
+## Author: kowalk
+## Version: 1.0.0
+## SavedVariables: ReagentsPrices
+## Dependencies: Auctionator
+
+CraftsmanHelper_Options.lua
