@@ -7,17 +7,15 @@ if ReagentPrices == nil then
 end
 
 local Options = CreateFrame("ScrollFrame", "CraftsmanHelper_Options", UIParent, "UIPanelScrollFrameTemplate")
-Options:SetPoint("TOPLEFT", 3, -4)
-Options:SetPoint("BOTTOMRIGHT", -27, 4)
 Options:SetHeight(600)
 Options:SetWidth(600)
+Options:SetPoint("CENTER", 0, 0)
 Options:SetFrameLevel(1)
 
 local OptionsScrollChild = CreateFrame("Frame")
 Options:SetScrollChild(OptionsScrollChild)
 OptionsScrollChild:SetWidth(582)
 OptionsScrollChild:SetHeight(600)
-
 
 local auctionatorRealmName = realmName .. "_" .. UnitFactionGroup("player")
 
@@ -94,35 +92,67 @@ function SaveReagent()
     end
 end
 
+function CreateReagentInput(width, text, left)
+    input = CreateFrame("EditBox", nil, OptionsScrollChild)
+    input:SetHeight(20)
+    input:SetAutoFocus(false)
+    input:SetWidth(width)
+    input:SetText(text)
+    input:SetFont("Fonts\\FRIZQT__.TTF", 11)
+    input:SetTextInsets(4, 0, 0, 0)
+    input:SetPoint("TOPLEFT", OptionsScrollChild, "TOPLEFT", left, (-40 - 24 * (idx + 1)))
+    input:SetScript(
+        "OnEscapePressed",
+        function(self)
+            self:ClearFocus()
+        end
+    )
+
+    return input
+end
+
+function InitPriceList()
+    local idx = 1
+    for name, price in pairs(ReagentsPrices[realmName]) do
+        local ReagentRowName = CreateReagentInput(200, name, 20)
+
+        SetupInputTexture(ReagentRowName)
+
+        local ReagentRowPrice = CreateReagentInput(100, price, 240)
+
+        SetupInputTexture(ReagentRowPrice)
+
+        idx = idx + 1
+    end
+end
+
+function SetupInputTexture(frame)
+    frame.texture = frame:CreateTexture()
+    frame.texture:SetAllPoints(frame)
+    frame.texture:SetTexture(0, 0, 0, 0.5)
+    frame:SetBackdrop(
+        {
+            bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
+            edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
+            tile = true,
+            tileSize = 16,
+            edgeSize = 4,
+            insets = {
+                left = 3,
+                right = 3,
+                top = 5,
+                bottom = 3
+            }
+        }
+    )
+    frame:SetBackdropColor(0, 0, 0, 1)
+end
+
 SLASH_CMH1 = "/cmh"
 SlashCmdList["CMH"] = function(msg)
     local _, _, cmd, args = string.find(msg, "%s?(%w+)%s?(.*)")
     if (cmd == "options") then
+        InitPriceList()
         Options:Show()
-        local idx = 1
-        for name, price in pairs(ReagentsPrices[realmName]) do
-            local ReagentRowName = CreateFrame("EditBox", "ReagentRowName", OptionsScrollChild, "InputBoxTemplate")
-            ReagentRowName:SetHeight(20)
-            ReagentRowName:SetAutoFocus(false)
-            ReagentRowName:SetWidth(200)
-            ReagentRowName:SetText(name)
-            ReagentRowName:SetFont("Fonts\\FRIZQT__.TTF", 11)
-            ReagentRowName:SetPoint("TOPLEFT", OptionsScrollChild, "TOPLEFT", 20, (-60 * (idx * 2)))
-            ReagentRowName:SetScript(
-                "OnEscapePressed",
-                function(self)
-                    self:ClearFocus()
-                end
-            )
-
-            local ReagentRowPrice = CreateFrame("EditBox", "ReagentRowPrice", OptionsScrollChild, "InputBoxTemplate")
-            ReagentRowPrice:SetHeight(20)
-            ReagentRowPrice:SetAutoFocus(false)
-
-            ReagentRowPrice:SetWidth(100)
-            ReagentRowPrice:SetNumber(price)
-            ReagentRowPrice:SetPoint("TOPLEFT", OptionsScrollChild, "TOPLEFT", 240, (-60 * (idx * 4)))
-            idx = idx + 1
-        end
     end
 end
