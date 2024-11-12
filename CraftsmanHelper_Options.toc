@@ -6,3 +6,4 @@
 ## Dependencies: Auctionator
 
 CraftsmanHelper_Options.lua
+MinimapButton.lua 
