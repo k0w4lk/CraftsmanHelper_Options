@@ -5,26 +5,7 @@ local FrameHidden = true
 
 local renderedItems = {}
 
-function cmh_ChatEdit_InsertLink(text)
-	if (CMH_Core:IsShown() and IsShiftKeyDown()) then	
-		local item;
-		
-        if (strfind(text, "item:", 1, true)) then
-			item = GetItemInfo(text);
-		end
 
-		if (item) then
-			ReagentName:SetText(item);
-			return true;
-		end
-	end
-
-	return cmh_orig_ChatEdit_InsertLink(text);
-
-end 
-
-local cmh_orig_ChatEdit_InsertLink = ChatEdit_InsertLink;
-ChatEdit_InsertLink = cmh_ChatEdit_InsertLink;
 
 
 local priceInputWidth = {
@@ -55,6 +36,28 @@ CMH_Core:EnableMouse(true)
 CMH_Core:RegisterForDrag("LeftButton")
 CMH_Core:SetScript("OnDragStart", CMH_Core.StartMoving)
 CMH_Core:SetScript("OnDragStop", CMH_Core.StopMovingOrSizing)
+
+local cmh_orig_ChatEdit_InsertLink = ChatEdit_InsertLink;
+
+function cmh_ChatEdit_InsertLink(text)
+	if (CMH_Core:IsShown() and IsShiftKeyDown()) then	
+		local item;
+		
+        if (strfind(text, "item:", 1, true)) then
+			item = GetItemInfo(text);
+		end
+
+		if (item) then
+			ReagentName:SetText(item);
+			return true;
+		end
+	end
+
+	return cmh_orig_ChatEdit_InsertLink(text);
+
+end 
+
+ChatEdit_InsertLink = cmh_ChatEdit_InsertLink;
 
 local OptionsScrollChild = CreateFrame("Frame", "OptionsScrollChild")
 OptionsScrollChild:SetWidth(620)
